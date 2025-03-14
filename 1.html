@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>做我的恋人好吗？</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* 优化后的CSS样式 */
+        body {
+            background: linear-gradient(135deg, #ffe6eb 0%, #ffcad4 100%);
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        main {
+            text-align: center;
+            padding: 20px;
+            max-width: 500px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .heart-img {
+            width: 200px;
+            animation: float 2s ease-in-out infinite, pulse 1.5s ease-in-out infinite;
+        }
+
+        h1 {
+            color: #e91e63;
+            margin: 20px 0;
+            font-size: 2.5em;
+        }
+
+        .buttons {
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 35px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        #yes-btn {
+            background: #ff4081;
+            color: white;
+            margin-right: 20px;
+        }
+
+        #no-btn {
+            background: #9c27b0;
+            color: white;
+            position: relative;
+        }
+
+        .success {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .success img {
+            width: 150px;
+            margin-top: 30px;
+        }
+
+        /* 动画优化 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            main {
+                padding: 15px;
+            }
+
+            button {
+                padding: 10px 25px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <img src="3.png" alt="爱心" class="heart-img">
+        <h1>你愿意成为我的恋人吗？</h1>
+        <div class="buttons">
+            <button id="yes-btn">愿意</button>
+            <button id="no-btn">再想想</button>
+        </div>
+    </main>
+
+    <div class="success">
+        <h1>❤️ 谢谢你的肯定！ ❤️</h1>
+        <img src="4.png" alt="成功">
+    </div>
+
+    <script>
+        // 优化后的交互逻辑
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const successDiv = document.querySelector('.success');
+        let clickCount = 0;
+        const messages = ["再想想", "确定吗？", "最后机会！", "真的要拒绝吗？"];
+
+        // 按钮交互优化
+        function updateButtons() {
+            noBtn.style.transform = `scale(${Math.max(0, 1 - clickCount * 0.3)})`;
+            noBtn.style.opacity = Math.max(0, 1 - clickCount * 0.3);
+            yesBtn.style.transform = `scale(${1 + clickCount * 0.2})`;
+
+            if(clickCount < 3) {
+                noBtn.innerText = messages[clickCount];
+            } else {
+                noBtn.style.display = 'none';
+                yesBtn.style.margin = '0 auto';
+            }
+        }
+
+        noBtn.addEventListener('click', () => {
+            clickCount++;
+            updateButtons();
+        });
+
+        yesBtn.addEventListener('click', () => {
+            document.querySelector('main').style.display = 'none';
+            successDiv.style.display = 'flex';
+            successDiv.style.animation = 'fadeIn 0.5s';
+
+            // 优化飘落爱心
+            const hearts = [];
+            for(let i=0; i<20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart';
+                heart.style.left = `${Math.random()*100}vw`;
+                heart.style.animationDuration = `${Math.random()*3+2}s`;
+                document.body.appendChild(heart);
+                hearts.push(heart);
+            }
+
+            // 清理机制
+            setTimeout(() => {
+                hearts.forEach(h => h.remove());
+                successDiv.style.display = 'none';
+            }, 5000);
+        });
+
+        // 动态样式优化
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .falling-heart {
+                position: absolute;
+                color: #ff4081;
+                font-size: 2.2em;
+                animation: fall 3s linear infinite, pulse 1.2s ease-in-out infinite;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
